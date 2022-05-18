@@ -33,11 +33,10 @@ template <typename T> send_message(T i, T j, T message) {
 int main(int argc, char *argv[]) {
     
     int rank, n;
-    double message = 4.00;
+    char message = '4';
     /*
     char 1 byte
-    int 2 or 4 bytes
-    float 4 bytes
+    int 4 bytes
     double 8 bytes
     */
 
@@ -50,21 +49,21 @@ int main(int argc, char *argv[]) {
     double end_time = 0.0;
     if (rank == 0){
         start_time = MPI_Wtime();
-        MPI_Send(&message, 1, MPI_DOUBLE, 1, rank, MPI_COMM_WORLD);
+        MPI_Send(&message, 1, MPI_CHAR, 1, rank, MPI_COMM_WORLD);
         end_time = MPI_Wtime();
         final_time = (end_time - start_time) * 1e6;
         cout << "Message sent from 0 to 1" << endl;
     } else if (rank != n-1){
-        MPI_Recv(&message, 1, MPI_DOUBLE, rank-1, rank-1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(&message, 1, MPI_CHAR, rank-1, rank-1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         start_time = MPI_Wtime();
-        MPI_Send(&message, 1, MPI_DOUBLE, rank+1, rank, MPI_COMM_WORLD);
+        MPI_Send(&message, 1, MPI_CHAR, rank+1, rank, MPI_COMM_WORLD);
         end_time = MPI_Wtime();
         final_time = (end_time - start_time) * 1e6;
         cout << "Message sent from " << rank << " to " << rank+1 << endl;
     } else{
-        MPI_Recv(&message, 1, MPI_DOUBLE, rank-1, rank-1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        MPI_Recv(&message, 1, MPI_CHAR, rank-1, rank-1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         start_time = MPI_Wtime();
-        MPI_Send(&message, 1, MPI_DOUBLE, 0, rank, MPI_COMM_WORLD);
+        MPI_Send(&message, 1, MPI_CHAR, 0, rank, MPI_COMM_WORLD);
         end_time = MPI_Wtime();
         final_time = (end_time - start_time) * 1e6;
         cout << "Message sent from " << rank << " to 0" << endl;
@@ -74,7 +73,7 @@ int main(int argc, char *argv[]) {
 
     if (rank == 0) {
         fstream f;
-        f.open("test_double_8.txt", ios::app);
+        f.open("test_char_64.txt", ios::app);
         //if(f==NULL){printf("failed to open file: permission issue ?\n");exit(1);}
         //fprintf(f,"%.2f \n",final_time_sum / double(n));
         f << final_time_sum / double(n);
